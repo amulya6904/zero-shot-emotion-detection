@@ -1,0 +1,117 @@
+# ============================================================================
+# Python
+# Ignore Python bytecode, compiled extensions, packaging outputs, and virtual
+# environments generated during local development or distribution builds.
+# ============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ============================================================================
+# Jupyter
+# Notebook checkpoints are auto-generated and should not be tracked because
+# they add noise and rarely represent intentional source changes.
+# ============================================================================
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# ============================================================================
+# IDE and Editor
+# Editor settings and swap files are machine-specific and can create
+# unnecessary churn across collaborators using different tools.
+# ============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# ============================================================================
+# Data and Models
+# Raw datasets, intermediate annotations, trained checkpoints, and prediction
+# exports can be large, sensitive, or reproducible from external pipelines.
+# Keep directory placeholders like `.gitkeep` committed, but ignore data files.
+# ============================================================================
+data/english/*.csv
+data/english/*.json
+data/hindi/*.csv
+data/hindi/*.json
+data/bhojpuri/*.csv
+data/bhojpuri/*.json
+results/models/*.pt
+results/models/*.pth
+results/models/*.bin
+results/predictions/*.json
+results/predictions/*.csv
+
+# ============================================================================
+# Logs and Temporary Outputs
+# Training logs, experiment trackers, and runtime traces are generated during
+# execution and should remain local unless explicitly archived elsewhere.
+# ============================================================================
+logs/
+*.log
+runs/
+tensorboard/
+wandb/
+.wandb/
+
+# ============================================================================
+# Cache
+# Cache files and serialized intermediates improve local speed but are not
+# reliable source artifacts for version control.
+# ============================================================================
+.cache/
+*.pkl
+*.pickle
+
+# ============================================================================
+# Config and Secrets
+# Local environment overrides and secret-bearing configuration files should
+# never be committed to the repository.
+# ============================================================================
+.env
+.env.local
+.env.*.local
+config.local.yaml
+
+# ============================================================================
+# Operating System
+# These files are created by specific operating systems and file explorers and
+# provide no value to the project history.
+# ============================================================================
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# ============================================================================
+# Testing, Coverage, and Static Analysis
+# Test caches, coverage reports, and type-check caches are generated artifacts
+# that can always be recreated from the source tree.
+# ============================================================================
+pytest_cache/
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/

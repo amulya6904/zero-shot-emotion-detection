@@ -1,0 +1,187 @@
+# ============================================================================
+# Zero-Shot Cross-Lingual Emotion Detection Configuration
+# ============================================================================
+# This file centralizes project metadata, dataset settings, model selection,
+# training hyperparameters, inference behavior, filesystem paths, hardware
+# preferences, and logging options.
+#
+# Usage examples:
+# 1. Switch to CPU-only execution:
+#    training:
+#      device: "cpu"
+#    hardware:
+#      use_cuda: false
+#
+# 2. Use multilingual BERT instead of XLM-R:
+#    model:
+#      model_name: "bert-base-multilingual-cased"
+#      model_type: "mbert"
+#
+# 3. Reduce memory usage for smaller GPUs:
+#    data:
+#      batch_size: 8
+#      max_length: 256
+#    hardware:
+#      mixed_precision: true
+#
+# 4. Change the emotion label set:
+#    data:
+#      emotion_classes: ["joy", "sadness", "anger", "fear", "neutral"]
+#      num_emotions: 5
+#    model:
+#      num_labels: 5
+# ============================================================================
+
+project:
+  name: "Zero-Shot Cross-Lingual Emotion Detection"
+  version: "1.0.0"
+  description: "Emotion detection in Indian dialects using multilingual transformers"
+  author: "Amulya Anutej"
+  license: "MIT"
+  github_url: "https://github.com/amulya6904/zero-shot-emotion-detection"
+
+data:
+  dataset_name: "emotion_multilingual"
+
+  # Supported source and target languages or dialects.
+  languages:
+    - "english"
+    - "hindi"
+    - "bhojpuri"
+
+  # Unified label inventory shared across languages.
+  emotion_classes:
+    - "joy"
+    - "sadness"
+    - "anger"
+    - "fear"
+    - "surprise"
+    - "disgust"
+    - "neutral"
+
+  # Keep this synchronized with the number of labels above.
+  num_emotions: 7
+
+  # Dataset splits. These should sum to 1.0 for a standard partition.
+  train_size: 0.7
+  val_size: 0.15
+  test_size: 0.15
+
+  # Text processing and dataloader settings.
+  max_length: 512        # Maximum token length after tokenization.
+  batch_size: 32         # Training and evaluation batch size.
+  num_workers: 4         # Number of parallel data-loading workers.
+  seed: 42               # Random seed for reproducibility.
+
+model:
+  # Model selection examples:
+  # - "bert-base-multilingual-cased" -> model_type: "mbert"
+  # - "xlm-roberta-base"             -> model_type: "xlm-roberta"
+  # - compact distilled multilingual model -> model_type: "distilbert-multilingual"
+  model_name: "xlm-roberta-base"
+  model_type: "xlm-roberta"
+
+  # Classification head configuration.
+  num_labels: 7
+
+  # Backbone architecture defaults for base-sized multilingual transformers.
+  hidden_size: 768
+  num_hidden_layers: 12
+  num_attention_heads: 12
+  intermediate_size: 3072
+
+  # Regularization.
+  hidden_dropout_prob: 0.1
+  attention_probs_dropout_prob: 0.1
+
+  # Sequence capacity.
+  max_position_embeddings: 512
+
+  # Weight initialization range used by transformer backbones.
+  initializer_range: 0.02
+
+training:
+  # Optimization settings.
+  learning_rate: 2.0e-5
+  weight_decay: 0.01
+  adam_epsilon: 1.0e-8
+  max_grad_norm: 1.0
+
+  # Schedule and training duration.
+  num_epochs: 3
+  gradient_accumulation_steps: 1
+  warmup_steps: 0
+
+  # Early stopping and checkpointing.
+  early_stopping_patience: 3
+  save_strategy: "epoch"   # Common options: "epoch", "steps", "best"
+
+  # Runtime behavior.
+  device: "cuda"           # Set to "cpu" when no compatible GPU is available.
+  seed: 42
+
+evaluation:
+  # Metrics to compute after validation or test runs.
+  metrics:
+    - "accuracy"
+    - "f1_weighted"
+    - "precision_weighted"
+    - "recall_weighted"
+    - "confusion_matrix"
+
+  # If true, compute metrics for each individual emotion class.
+  compute_per_class: true
+
+  # If true, persist model predictions for later analysis.
+  save_predictions: true
+
+inference:
+  # Zero-shot strategy choices:
+  # - "similarity": compare text embeddings to label or prompt representations
+  # - "classification": use a supervised classification head
+  zero_shot_strategy: "similarity"
+
+  # Minimum score required before accepting a prediction.
+  confidence_threshold: 0.3
+
+  # Number of highest-probability labels to return.
+  top_k_predictions: 3
+
+  # Enable only if the model pipeline explicitly supports attention outputs.
+  return_attention: false
+
+paths:
+  # Input data directories.
+  data_dir: "./data"
+  english_dir: "./data/english"
+  hindi_dir: "./data/hindi"
+  bhojpuri_dir: "./data/bhojpuri"
+  processed_data_dir: "./data/processed"
+
+  # Output and artifact directories.
+  models_dir: "./results/models"
+  predictions_dir: "./results/predictions"
+  visualizations_dir: "./results/visualizations"
+  logs_dir: "./logs"
+  paper_dir: "./paper"
+
+hardware:
+  # Hardware selection and accelerator behavior.
+  use_cuda: true
+  gpu_id: 0               # GPU index to use when multiple devices are available.
+  num_gpus: 1
+  mixed_precision: false  # Enable with care; validate numerical stability first.
+  cache_dir: "./models_cache"
+
+logging:
+  # Logging verbosity. Common values: DEBUG, INFO, WARNING, ERROR, CRITICAL.
+  level: "INFO"
+
+  # Python logging formatter string.
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+  # File destination for training and evaluation logs.
+  file: "./logs/training.log"
+
+  # If true, logs are printed to the terminal in addition to the log file.
+  console_output: true
